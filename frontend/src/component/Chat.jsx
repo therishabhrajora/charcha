@@ -44,7 +44,7 @@ function Chat() {
               }`}
             >
               <div className=" capitalize font-bold" >{sender}</div>
-              <div className="font-thin">{msg.content}</div>
+              <div className="font-normal">{msg.content}</div>
 
               <small
                 className={`mt-1 text-[10px] text-right float-right ${
