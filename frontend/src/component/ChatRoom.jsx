@@ -11,7 +11,7 @@ import { baseURl } from "../config/axios";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { toast } from "react-hot-toast";
-import { addMessages } from "../store/slice/ChatRoomSlice";
+import { addMessages, isSubscribed } from "../store/slice/ChatRoomSlice";
 
 function ChatRoom() {
   const currentUser = useSelector((state) => state.chatroom.currentUser);
@@ -39,7 +39,6 @@ function ChatRoom() {
   //stompclient ko inti n krne khonge]
   //scbscribe
   useEffect(() => {
-    let isSubscribed = false;
     // sockjs object
     const sock = new SockJS(`${baseURl}/chat`);
     console.log("this is sock",sock)
