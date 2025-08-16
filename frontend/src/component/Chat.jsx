@@ -17,8 +17,8 @@ function Chat() {
     <div className="h-full text-sm w-full overflow-auto p-2 space-y-2 custom-scroll z-10 relative">
       {messages.map((msg, idx) => {
         if (!msg.content?.trim()) return null;
-        const sender="you";
-        const isCurrentUser = msg.sender === currentUser && sender==="you";
+        const isCurrentUser = msg.sender === currentUser;
+        const sender = isCurrentUser ? "You" : msg.sender;
         const formatTime = (timeStamp) => {
           const date = new Date(timeStamp);
           let hours = date.getHours();
