@@ -129,6 +129,7 @@ function JoinCreateChat() {
             </div>
           </div>
         </div>
+        <div className="capitalize text-shadow-indigo-200 font-light">Developed By:Rishabh Rajora</div>
       </div>
     </>
   );
