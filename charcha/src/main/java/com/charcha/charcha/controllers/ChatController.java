@@ -27,7 +27,7 @@ public class ChatController {
 
     @MessageMapping("/sendMessage/{roomId}")
     @SendTo("/topic/room/{roomId}")
-    public Message sendMessage(@DestinationVariable String roomId, @RequestBody MessageRequest request) {
+    public Message sendMessage(@DestinationVariable String roomId, MessageRequest request) {
         Room room = roomRepo.findByRoomId(request.getRoomId());
         Message msg = new Message();
         msg.setContent(request.getContent());
