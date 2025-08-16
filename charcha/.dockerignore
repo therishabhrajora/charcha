@@ -1,0 +1,20 @@
+# Ignore Maven and target build cache
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE configs
+.idea/
+.vscode/
+*.iml
+
+# OS files
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# Git files
+.git
+.gitignore
