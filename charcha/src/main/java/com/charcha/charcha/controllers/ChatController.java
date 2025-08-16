@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Controller
 @CrossOrigin(origins = {
-        AppConstants.FRONTNED_BASE_URL_LOCAL, AppConstants.FRONTNED_BASE_URL_NETLIFY
+        AppConstants.FRONTNED_BASE_URL_LOCAL, AppConstants.FRONTNED_BASE_URL_NETLIFY,AppConstants.FRONTNED_BASE_URL_RENDER
 })
 public class ChatController {
     private RoomRepo roomRepo;
