@@ -91,7 +91,7 @@ function ChatRoom() {
       console.log("newmsg",newmsg);
 
       stompClient.publish({
-        destination: `/app/sendMessage/${details.roomId}`,
+        destination: `/sendMessage/${details.roomId}`,
         body: JSON.stringify(newmsg),
       });
       setInput("");
