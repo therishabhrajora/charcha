@@ -42,7 +42,7 @@ function Chat() {
                   : "bg-gray-300 text-black dark:bg-gray-600 dark:text-white"
               }`}
             >
-              <div className=" capitalize font-bold" >{msg.sender}</div>
+              <div className=" capitalize font-bold" >You</div>
               <div className="font-thin">{msg.content}</div>
 
               <small
