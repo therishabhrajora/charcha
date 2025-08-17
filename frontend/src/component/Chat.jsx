@@ -11,8 +11,6 @@ function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-
-
   return (
     <div className="h-full text-sm w-full overflow-auto p-2 space-y-2 custom-scroll z-10 relative">
       {messages.map((msg, idx) => {
@@ -20,13 +18,12 @@ function Chat() {
         const isCurrentUser = msg.sender === currentUser;
         const sender = isCurrentUser ? "You" : msg.sender;
         const formatTime = (timeStamp) => {
-          const date = new Date(timeStamp);
-          let hours = date.getHours();
-          const minutes = date.getMinutes().toString().padStart(2, "0");
-          const ampm = hours >= 12 ? "PM" : "AM";
-
-          hours = hours % 12 || 12; // convert to 12-hour format
-          return `${hours}:${minutes} ${ampm}`;
+          return new Date(timeStamp).toLocaleString("en-IN", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+            timeZone: "Asia/Kolkata",
+          });
         };
 
         return (
@@ -43,7 +40,7 @@ function Chat() {
                   : "bg-gray-300 text-black dark:bg-gray-600 dark:text-white"
               }`}
             >
-              <div className=" capitalize font-bold" >{sender}</div>
+              <div className=" capitalize font-bold">{sender}</div>
               <div className="font-normal">{msg.content}</div>
 
               <small
