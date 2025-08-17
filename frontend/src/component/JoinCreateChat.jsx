@@ -14,10 +14,15 @@ import {
   setCurrentUser,
 } from "../store/slice/ChatRoomSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "./loader";
+import { useState } from "react";
+
 function JoinCreateChat() {
   const navigate = useNavigate();
   const details = useSelector((state) => state.chatroom.details);
   const dispatch = useDispatch();
+  const [loader, setloader] = useState(false);
+
 
   const handleform = (e) => {
     dispatch(setdetails({ ...details, [e.target.name]: e.target.value }));
@@ -39,10 +44,11 @@ function JoinCreateChat() {
   const joinRoom = async () => {
     if (validateForm()) {
       try {
-        const res = await joinRoomApi(details.roomId);
-        console.log(res);
+        setloader(true);
+        await joinRoomApi(details.roomId);
+
         await getMessages(details.roomId);
-        dispatch(setCurrentUser(details.username))
+        dispatch(setCurrentUser(details.username));
         dispatch(setConnection(true));
         toast.success("join..");
         navigate("/chat");
@@ -50,6 +56,8 @@ function JoinCreateChat() {
         if (error.response?.status === 400) {
           toast.error(error.response.data);
         }
+      } finally {
+        setloader(false);
       }
     }
   };
@@ -57,6 +65,7 @@ function JoinCreateChat() {
   const createRoom = async () => {
     if (validateForm()) {
       try {
+        setloader(true);
         const res = await createRoomApi(details);
         console.warn(res);
         await getMessages(details.roomId);
@@ -69,9 +78,13 @@ function JoinCreateChat() {
         if (error.response?.status == 400) {
           toast.error(error.response.data);
         }
+      } finally {
+        setloader(false);
       }
     }
   };
+
+  if (loader) return <Loader />;
 
   return (
     <>
@@ -129,7 +142,9 @@ function JoinCreateChat() {
             </div>
           </div>
         </div>
-        <div className="capitalize text-indigo-200 font-light text-center text-xs dark:text-slate-600">Developed By:Rishabh Rajora</div>
+        <div className="capitalize text-indigo-200 font-light text-center text-xs dark:text-slate-600">
+          Developed By:Rishabh Rajora
+        </div>
       </div>
     </>
   );

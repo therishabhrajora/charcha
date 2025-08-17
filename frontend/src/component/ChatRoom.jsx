@@ -11,7 +11,11 @@ import { baseURl } from "../config/axios";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { toast } from "react-hot-toast";
-import { addMessages, isSubscribed } from "../store/slice/ChatRoomSlice";
+import {
+  addMessages,
+  isSubscribed,
+  setConnection,
+} from "../store/slice/ChatRoomSlice";
 
 function ChatRoom() {
   const currentUser = useSelector((state) => state.chatroom.currentUser);
@@ -41,31 +45,37 @@ function ChatRoom() {
   useEffect(() => {
     // sockjs object
     const sock = new SockJS(`${baseURl}/chat`);
-    console.log("this is sock",sock)
+
     const client = new Client({
       webSocketFactory: () => sock,
       reconnectDelay: 5000,
       onConnect: () => {
-
         toast.success("Connected");
-        console.log("subsref",subscriptionRef)
-        console.log("subsref.current",subscriptionRef.current)
+        dispatch(setConnection(true));
+
         if (subscriptionRef.current) {
           subscriptionRef.current.unsubscribe();
-          console.log("inside subsref");
         }
-        subscriptionRef.current=client.subscribe(`/topic/room/${details.roomId}`, (message) => {
-          console.log("message",message);
-          const newmsg = JSON.parse(message.body);
-          console.log("newmsg",newmsg);
-          console.log("Received:", message);
-          dispatch(addMessages(newmsg));
-        });
+        subscriptionRef.current = client.subscribe(
+          `/topic/room/${details.roomId}`,
+          (message) => {
+            const newmsg = JSON.parse(message.body);
+
+            dispatch(addMessages(newmsg));
+          }
+        );
         dispatch(isSubscribed());
       },
 
       onStompError: (frame) => {
         console.error("Broker error:", frame.headers["message"]);
+      },
+      onWebSocketClose: () => {
+        dispatch(setConnection(false));
+        dispatch(isSubscribed(false));
+      },
+      onWebSocketError: () => {
+        dispatch(setConnection(false));
       },
     });
 
@@ -87,8 +97,6 @@ function ChatRoom() {
         roomId: details.roomId,
       };
 
-      console.log("newmsg",newmsg);
-
       stompClient.publish({
         destination: `/app/sendMessage/${details.roomId}`,
         body: JSON.stringify(newmsg),
@@ -98,21 +106,20 @@ function ChatRoom() {
   };
 
   const handleExit = () => {
-  if (subscriptionRef.current) {
-    subscriptionRef.current.unsubscribe();
-    subscriptionRef.current = null;
-    console.log("Unsubscribed from topic");
-  }
+    if (subscriptionRef.current) {
+      subscriptionRef.current.unsubscribe();
+      subscriptionRef.current = null;
+      dispatch(setConnection(false));
+      dispatch(isSubscribed(false));
+    }
 
-  if (stompClient) {
-    stompClient.deactivate();
-    setStompClient(null);
-    console.log("STOMP client deactivated");
-  }
+    if (stompClient) {
+      stompClient.deactivate();
+      setStompClient(null);
+    }
 
-  navigate("/"); // go back home
-};
-
+    navigate("/"); // go back home
+  };
 
   return (
     <>

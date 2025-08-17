@@ -32,7 +32,7 @@ const ChatRoomSlice = createSlice({
     setStompClient: (state, action) => {
       state.stompClient = action.payload;
     },
-    setSubcribe:(state,action)=>{
+    setSubcribed:(state,action)=>{
       state.isSubscribed=!state.isSubscribed;
     }
   },
