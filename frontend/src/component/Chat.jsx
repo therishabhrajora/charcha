@@ -18,11 +18,12 @@ function Chat() {
         const isCurrentUser = msg.sender === currentUser;
         const sender = isCurrentUser ? "You" : msg.sender;
         const formatTime = (timeStamp) => {
-          return new Date(timeStamp).toLocaleString("en-IN", {
+          let date = new Date(timeStamp);
+          date.setMinutes(date.getMinutes() + (5 * 60 + 30));
+          return date.toLocaleString("en-IN", {
             hour: "numeric",
             minute: "numeric",
             hour12: true,
-            timeZone: "Asia/Kolkata",
           });
         };
 
