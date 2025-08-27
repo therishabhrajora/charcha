@@ -37,13 +37,13 @@ function Chat() {
             className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] md:max-w-[60%] px-4 py-2 rounded-2xl break-words shadow-lg transition-all duration-300 ease-in-out
+              className={`max-w-[80%]  md:max-w-[60%] px-4 py-2 rounded-2xl break-words shadow-lg transition-all duration-300 ease-in-out
                 ${isCurrentUser 
-                  ? (theme === "dark" ? "dark-sender" : "light-sender") 
-                  : (theme === "dark" ? "dark-receiver" : "light-receiver")}
+                  ? (theme === "dark" ? "dark-sender " : "light-sender  border ") 
+                  : (theme === "dark" ? "dark-receiver border border-slate-400" : "light-receiver  border border-slate-400")}
               `}
             >
-              <div className="capitalize font-bold mb-1">
+              <div className="capitalize font-bold mb-1 ">
                 {isCurrentUser ? "You" : msg.sender}
               </div>
               <div className="font-normal">{msg.content}</div>
