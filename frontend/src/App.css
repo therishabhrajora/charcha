@@ -25,6 +25,7 @@
   /* ===========================
    🌑 Dark Theme
    =========================== */
+/* Dark Theme Colors */
 .dark-background {
   background-color: #1a1a2e; /* App background */
 }
@@ -58,8 +59,8 @@
 }
 
 /* ===========================
-   ☀️ Light Theme
-   =========================== */
+    ☀️ Light Theme
+    =========================== */
 .light-background {
   background-color: #f0f2f5; /* App background */
 }
@@ -92,12 +93,13 @@
   border-color: #c5cae9;
 }
 
+/* Corrected button classes with explicit gradients */
 .dark-btn {
-  @apply bg-gradient-to-br from-dark-primary-1 to-dark-primary-2 text-dark-text;
+  @apply bg-gradient-to-br from-[#7F00FF] to-[#E100FF] text-white;
 }
 
 .light-btn {
-  @apply bg-gradient-to-br from-light-primary-1 to-light-primary-2 text-light-text;
+  @apply bg-gradient-to-br from-[#00B4DB] to-[#0083B0] text-white;
 }
 
 }
