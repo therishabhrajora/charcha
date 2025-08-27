@@ -2,25 +2,102 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@layer utilities{
-    .custom-scroll::-webkit-scrollbar{
-        width: 5px;
-    }
-    .custom-scroll::-webkit-scrollbar-track{
-        background: transparent;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb{
-        background: lightgreen;
-        border-radius: 9999px;
+@layer utilities {
+  .custom-scroll::-webkit-scrollbar {
+    width: 5px;
+  }
+  .custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: lightgreen;
+    border-radius: 9999px;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: lightslategray;
+  }
 
-    }
-    .custom-scroll::-webkit-scrollbar-thumb:hover{
-        background: lightslategray;
-    }
-
-    /* .custom-scroll{
+  /* .custom-scroll{
         scrollbar-width: thin;
         scrollbar-color: lightgray transparent;
     } */
+
+  /* ===========================
+   🌑 Dark Theme
+   =========================== */
+.dark-background {
+  background-color: #1a1a2e; /* App background */
+}
+
+.dark-text {
+  color: #e8eaf6; /* Primary text */
+}
+
+.dark-secondary-text {
+  color: #c5cae9; /* Secondary text (timestamps, small info) */
+}
+
+.dark-sender {
+  background: linear-gradient(135deg, #7F00FF, #E100FF); /* Sender bubble */
+  color: #ffffff;
+}
+
+.dark-receiver {
+  background-color: #1e1e2d; /* Receiver bubble */
+  color: #e8eaf6;
+}
+
+.dark-input {
+  background-color: #4a4a66; /* Chat input field */
+  color: #ffffff;
+  border: 1px solid #5c5c7a;
+}
+
+.dark-border {
+  border-color: #4a4a66;
+}
+
+/* ===========================
+   ☀️ Light Theme
+   =========================== */
+.light-background {
+  background-color: #f0f2f5; /* App background */
+}
+
+.light-text {
+  color: #333333; /* Primary text */
+}
+
+.light-secondary-text {
+  color: #555555; /* Secondary text */
+}
+
+.light-sender {
+  background: linear-gradient(135deg, #00B4DB, #0083B0); /* Sender bubble */
+  color: #ffffff;
+}
+
+.light-receiver {
+  background-color: #e8eaf6; /* Receiver bubble */
+  color: #333333;
+}
+
+.light-input {
+  background-color: #ffffff; /* Chat input field */
+  color: #333333;
+  border: 1px solid #c5cae9;
+}
+
+.light-border {
+  border-color: #c5cae9;
+}
+
+.dark-btn {
+  @apply bg-gradient-to-br from-dark-primary-1 to-dark-primary-2 text-dark-text;
+}
+
+.light-btn {
+  @apply bg-gradient-to-br from-light-primary-1 to-light-primary-2 text-light-text;
+}
 
 }

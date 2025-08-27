@@ -6,7 +6,7 @@ import lightPattern from "../assets/moroccan-flower.png";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ThemeBtn from "./ThemeBtn";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { baseURl } from "../config/axios";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -28,22 +28,15 @@ function ChatRoom() {
   const [input, setInput] = useState("");
   const [stompClient, setStompClient] = useState(null);
   const inputRef = useRef(null);
-  const chatBoxRef = useRef(null);
   const subscriptionRef = useRef(null);
 
   useEffect(() => {
     if (!details.roomId || !details.username) {
-      navigate("/"); // only if not properly joined
+      navigate("/");
     }
   }, [details, connection, navigate]);
 
-  ///page intit:
-  //meses ko liad krane honmge
-
-  //stompclient ko inti n krne khonge]
-  //scbscribe
   useEffect(() => {
-    // sockjs object
     const sock = new SockJS(`${baseURl}/chat`);
 
     const client = new Client({
@@ -60,13 +53,11 @@ function ChatRoom() {
           `/topic/room/${details.roomId}`,
           (message) => {
             const newmsg = JSON.parse(message.body);
-
             dispatch(addMessages(newmsg));
           }
         );
         dispatch(isSubscribed());
       },
-
       onStompError: (frame) => {
         console.error("Broker error:", frame.headers["message"]);
       },
@@ -79,7 +70,6 @@ function ChatRoom() {
       },
     });
 
-    // ✅ Correct place to activate client
     client.activate();
     setStompClient(client);
 
@@ -88,7 +78,6 @@ function ChatRoom() {
     };
   }, [details.roomId, dispatch]);
 
-  //send msg
   const sendmessage = () => {
     if (stompClient && stompClient.connected && input.trim()) {
       const newmsg = {
@@ -118,81 +107,102 @@ function ChatRoom() {
       setStompClient(null);
     }
 
-    navigate("/"); // go back home
+    navigate("/");
   };
 
   return (
-    <>
-      <div className="h-screen w-full flex flex-col bg-gray-100 text-slate-900 dark:bg-gray-700 text-sm md:text-lg">
-        {/* HEADER */}
-        <header className="flex md:bg-red-400 justify-between items-center py-2 px-6 md:px-12 h-[10%] bg-green-800 text-slate-200 text-sm md:text-lg dark:bg-slate-900">
-          <div className="capitalize ">Room: {details.roomId}</div>
-          <div className="capitalize ">{details.username}</div>
-          <div className="flex justify-between gap-6 md:gap-12 items-center">
-            <div
-              onClick={handleExit}
-              className="capitalize  bg-red-400 text-black dark:text-white font-semibold py-1 px-3 rounded-lg cursor-pointer "
-            >
-              exit room
-            </div>
-            <ThemeBtn />
-          </div>
-        </header>
-
-        {/* MAIN CHAT AREA */}
-        <main
-          className="flex-1 relative overflow-auto"
-          style={{
-            backgroundImage: `url(${
-              theme === "dark" ? darkPattern : lightPattern
-            })`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundAttachment: "fixed",
-          }}
-        >
+    <div
+      className={`h-screen w-full flex flex-col text-sm md:text-lg ${
+        theme === "dark" ? "dark-background dark-text" : "light-background light-text"
+      }`}
+    >
+      {/* HEADER */}
+      <header
+        className={`flex justify-between items-center py-2 px-6 md:px-12 h-[10%] ${
+          theme === "dark" ? "dark-background dark-text" : "light-background light-text"
+        }`}
+      >
+        <div className="capitalize font-semibold">Room: {details.roomId}</div>
+        <div className="capitalize font-semibold">{details.username}</div>
+        <div className="flex justify-between gap-6 md:gap-12 items-center">
           <div
-            className={`absolute inset-0 ${
-              theme === "dark" ? "opacity-50 bg-black" : "opacity-10 bg-black"
+            onClick={handleExit}
+            className={`capitalize font-semibold py-1 px-3 rounded-lg cursor-pointer transition-all duration-300 ${
+              theme === "dark" ? "dark-sender" : "light-sender"
             }`}
-          ></div>
-
-          {/* Chat content */}
-          <div className="relative z-10 h-full overflow-y-auto ">
-            <Chat />
+          >
+            exit room
           </div>
-        </main>
+          <ThemeBtn />
+        </div>
+      </header>
 
-        {/* FOOTER */}
-        <footer className="p-2 w-full bg-gray-100 dark:bg-gray-800 dark:md:bg-gray-700 md:max-w-[50%] md:ml-[25%]">
-          <div className="flex items-center gap-3">
-            <input
-              type="text"
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  sendmessage();
-                }
-              }}
-              placeholder="Enter your message"
-              className="bg-white border border-gray-500 dark:border-gray-700 dark:bg-slate-600 dark:text-white text-sm w-full focus:outline-none px-3 py-2 rounded-full"
-            />
-            <button className="text-xl bg-green-800 text-slate-200 p-2 rounded-full">
-              <IoIosAttach />
-            </button>
-            <button
-              onClick={sendmessage}
-              className="text-xl bg-green-800 text-slate-200 p-2 rounded-full"
-            >
-              <IoMdSend />
-            </button>
-          </div>
-        </footer>
-      </div>
-    </>
+      {/* MAIN CHAT AREA */}
+      <main
+  className="flex-1 relative overflow-auto"
+  style={{
+    backgroundImage: `url(${theme === "dark" ? darkPattern : lightPattern})`,
+    backgroundRepeat: "repeat", // repeat looks better for patterns
+    backgroundSize: "auto",     // don’t stretch, keep tile effect
+    backgroundPosition: "center",
+  }}
+>
+  {/* Overlay (semi-transparent, not solid) */}
+  <div
+    className={`absolute inset-0 ${
+      theme === "dark"
+        ? "bg-dark-background/80"   // 80% opacity dark overlay
+        : "bg-light-background/80" // 80% opacity light overlay
+    }`}
+  ></div>
+
+  {/* Chat content */}
+  <div className="relative z-10 h-full overflow-y-auto">
+    <Chat />
+  </div>
+</main>
+
+
+      {/* FOOTER */}
+      <footer
+        className={`p-2 w-full transition-all duration-300 md:max-w-[50%] md:ml-[25%] ${
+          theme === "dark" ? "dark-background" : "light-secondary-1"
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendmessage();
+              }
+            }}
+            placeholder="Enter your message"
+            className={`border text-sm w-full focus:outline-none px-3 py-2 rounded-full transition-all duration-300 ${
+              theme === "dark" ? "dark-input" : "light-input"
+            }`}
+          />
+          <button
+            className={`text-xl p-2 rounded-full text-white transition-all duration-300 ${
+              theme === "dark" ? "dark-sender" : "light-sender"
+            }`}
+          >
+            <IoIosAttach />
+          </button>
+          <button
+            onClick={sendmessage}
+            className={`text-xl p-2 rounded-full text-white transition-all duration-300 ${
+              theme === "dark" ? "dark-sender" : "light-sender"
+            }`}
+          >
+            <IoMdSend />
+          </button>
+        </div>
+      </footer>
+    </div>
   );
 }
 

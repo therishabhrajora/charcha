@@ -20,19 +20,19 @@ import { useState } from "react";
 function JoinCreateChat() {
   const navigate = useNavigate();
   const details = useSelector((state) => state.chatroom.details);
+  const theme = useSelector((state) => state.theme.darkMode);
   const dispatch = useDispatch();
   const [loader, setloader] = useState(false);
-
 
   const handleform = (e) => {
     dispatch(setdetails({ ...details, [e.target.name]: e.target.value }));
   };
 
   const validateForm = () => {
-    if (details.username.trim() != "" && details.roomId.trim() != "") {
+    if (details.username.trim() !== "" && details.roomId.trim() !== "") {
       return true;
     }
-    toast.error("invalid inputs");
+    toast.error("Invalid inputs");
     return false;
   };
 
@@ -50,7 +50,7 @@ function JoinCreateChat() {
         await getMessages(details.roomId);
         dispatch(setCurrentUser(details.username));
         dispatch(setConnection(true));
-        toast.success("join..");
+        toast.success("Joined!");
         navigate("/chat");
       } catch (error) {
         if (error.response?.status === 400) {
@@ -66,16 +66,15 @@ function JoinCreateChat() {
     if (validateForm()) {
       try {
         setloader(true);
-        const res = await createRoomApi(details);
-        console.warn(res);
-        await getMessages(details.roomId);
+        await createRoomApi(details);
 
+        await getMessages(details.roomId);
         dispatch(setCurrentUser(details.username));
         dispatch(setConnection(true));
         toast.success("Room created");
         navigate("/chat");
       } catch (error) {
-        if (error.response?.status == 400) {
+        if (error.response?.status === 400) {
           toast.error(error.response.data);
         }
       } finally {
@@ -87,66 +86,89 @@ function JoinCreateChat() {
   if (loader) return <Loader />;
 
   return (
-    <>
-      <div className="relative">
-        <div className="absolute right-3 top-3 text-end bg-gray-100 dark:bg-slate-900 p-2">
-          <ThemeBtn />
-        </div>
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-slate-900">
-          <div className=" p-8 bg-green-400 m-10 dark:bg-slate-700  shadow-lg shadow-gray-950 dark:shadow-gray-400 rounded-2xl">
-            <div className="flex justify-center mb-5">
-              <img src={speechBubble} alt="" className="w-[80px]" />
-            </div>
-            <h1 className="text-2xl font-bold text-center mb-2">
-              Join Room/Create room ..
-            </h1>
-            <div className="">
-              <label htmlFor="name" className="w-full m-1 font-semibold">
-                Your name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="username"
-                onChange={handleform}
-                value={details.username}
-                placeholder="Enter your name"
-                className="w-full  border-sky-400 m-1 px-3 bg-white py-1 rounded focus:ring-2 focus:ring-sky-400 mb-2  focus:outline-none dark:text-gray-700"
-              />
-              <label htmlFor="room" className="w-full m-1 font-semibold">
-                Room Id
-              </label>
-              <input
-                type="text"
-                id="room"
-                name="roomId"
-                value={details.roomId}
-                onChange={handleform}
-                placeholder="Enter room name"
-                className="w-full  border-sky-400 m-1 px-3 bg-white py-1 rounded focus:ring-2 focus:ring-sky-400 mb-2  focus:outline-none dark:text-gray-700"
-              />
-              <div className="flex justify-between mt-2">
-                <div
-                  onClick={joinRoom}
-                  className="py-1 px-3 bg-green-900 rounded cursor-pointer text-white shadow-md shadow-black"
-                >
-                  Join Room
-                </div>
-                <div
-                  onClick={createRoom}
-                  className="py-1 px-3 bg-sky-500 rounded cursor-pointer text-white shadow-md shadow-black "
-                >
-                  Create Room
-                </div>
+    <div className="relative">
+      {/* Theme Toggle */}
+      <div className={`absolute right-3 top-3 p-2 ${theme === "dark" ? "dark-background" : "light-background"}`}>
+        <ThemeBtn />
+      </div>
+
+      {/* Main Container */}
+      <div className={`min-h-screen flex items-center justify-center ${theme === "dark" ? "dark-background" : "light-background"}`}>
+        <div className={`p-8 m-10 shadow-lg rounded-2xl transition-all duration-300
+          ${theme === "dark" ? "dark-receiver shadow-dark-secondary-2" : "light-receiver shadow-gray-400"}
+        `}>
+          {/* Logo */}
+          <div className="flex justify-center mb-5">
+            <img src={speechBubble} alt="Speech Bubble" className="w-[80px]" />
+          </div>
+
+          {/* Title */}
+          <h1 className={`text-2xl font-bold text-center mb-2 ${theme === "dark" ? "dark-text" : "light-text"}`}>
+            Join or Create a Room
+          </h1>
+
+          {/* Form */}
+          <div>
+            {/* Username */}
+            <label htmlFor="name" className={`w-full m-1 font-semibold ${theme === "dark" ? "dark-text" : "light-text"}`}>
+              Your name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="username"
+              onChange={handleform}
+              value={details.username}
+              placeholder="Enter your name"
+              className={`w-full m-1 px-3 py-1 rounded focus:ring-2 focus:outline-none
+                ${theme === "dark" ? "dark-input focus:ring-dark-primary-1" : "light-input focus:ring-light-primary-1"}
+              `}
+            />
+
+            {/* Room ID */}
+            <label htmlFor="room" className={`w-full m-1 font-semibold ${theme === "dark" ? "dark-text" : "light-text"}`}>
+              Room ID
+            </label>
+            <input
+              type="text"
+              id="room"
+              name="roomId"
+              value={details.roomId}
+              onChange={handleform}
+              placeholder="Enter room name"
+              className={`w-full m-1 px-3 py-1 rounded focus:ring-2 focus:outline-none
+                ${theme === "dark" ? "dark-input focus:ring-dark-primary-1" : "light-input focus:ring-light-primary-1"}
+              `}
+            />
+
+            {/* Buttons */}
+            <div className="flex justify-between mt-2">
+              <div
+                onClick={joinRoom}
+                className={`py-1 px-3 rounded cursor-pointer text-white shadow-md transition-all duration-300
+                  ${theme === "dark" ? "dark-sender shadow-black" : "light-sender shadow-gray-700"}
+                `}
+              >
+                Join Room
+              </div>
+              <div
+                onClick={createRoom}
+                className={`py-1 px-3 rounded cursor-pointer text-white shadow-md transition-all duration-300
+                  ${theme === "dark" ? "dark-sender shadow-black" : "light-sender shadow-gray-700"}
+                `}
+              >
+                Create Room
               </div>
             </div>
           </div>
         </div>
-        <div className="capitalize text-indigo-200 font-light text-center text-xs dark:text-slate-600">
-          Developed By:Rishabh Rajora
-        </div>
       </div>
-    </>
+
+      {/* Footer */}
+      <div className={`capitalize text-center text-xs ${theme === "dark" ? "dark-secondary-text" : "light-secondary-text"}`}>
+        Developed By: Rishabh Rajora
+      </div>
+    </div>
   );
 }
 
